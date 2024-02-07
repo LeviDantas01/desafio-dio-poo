@@ -1,4 +1,5 @@
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Dev {
@@ -7,12 +8,25 @@ public class Dev {
     private Set<Conteudo> conteudosConcuidos = new LinkedHashSet<>();
 
     public void inscreverBootcamp(Bootcamp bootcamp) {
+        this.conteudosInscritos.addAll(bootcamp.getConteudos());
+        bootcamp.getDevsIncritos().add(this);
     }
 
     public void progredir() {
+        Optional<Conteudo> contudo = this.conteudosInscritos.stream().findFirst();
+        if (contudo.isPresent()) {
+            this.conteudosConcuidos.add(contudo.get());
+            this.conteudosInscritos.remove(contudo.get());
+        } else {
+            System.err.println("Vc não está maticulado em nenhum contudo");
+        }
     }
 
-    public void calcularTotalXp() {
+    public double calcularTotalXp() {
+        return this.conteudosConcuidos
+                .stream()
+                .mapToDouble(Conteudo::calcularXp)
+                .sum();
     }
 
     public String getNome() {
